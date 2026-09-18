@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather App</title>
+    <link rel="stylesheet" href="src/style.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <h1>Weather App</h1>
+        <div class="search-box">
+          <input id="cityInput" type="text" placeholder="Search city" value="London" />
+          <button id="searchBtn">Search</button>
+        </div>
+      </header>
+
+      <main class="weather-card">
+        <div class="city-row">
+          <div>
+            <p class="label">Location</p>
+            <h2 id="cityName">London</h2>
+          </div>
+          <div class="condition-box">
+            <span id="conditionIcon">☀️</span>
+          </div>
+        </div>
+
+        <div class="temp-row">
+          <div class="temperature" id="temperature">22°C</div>
+          <div class="condition" id="condition">Sunny</div>
+        </div>
+
+        <div class="details-grid">
+          <div class="detail-item">
+            <span>Humidity</span>
+            <strong id="humidity">58%</strong>
+          </div>
+          <div class="detail-item">
+            <span>Wind</span>
+            <strong id="wind">12 km/h</strong>
+          </div>
+          <div class="detail-item">
+            <span>Feels Like</span>
+            <strong id="feelsLike">24°C</strong>
+          </div>
+          <div class="detail-item">
+            <span>Pressure</span>
+            <strong id="pressure">1013 hPa</strong>
+          </div>
+        </div>
+
+        <div id="statusMessage" class="status" aria-live="polite"></div>
+      </main>
+    </div>
+
+    <script src="src/app.js"></script>
+  </body>
+</html>
