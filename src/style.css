@@ -170,3 +170,13 @@ h1 {
     grid-template-columns: 1fr;
   }
 }
+/* Day and Night Theme */
+
+body {
+  transition: background 0.5s ease, color 0.5s ease;
+}
+
+body.night-mode {
+  background: #101a35;
+  color: white;
+}

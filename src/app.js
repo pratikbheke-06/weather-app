@@ -1,3 +1,4 @@
+
 const cityInput = document.getElementById('cityInput');
 const searchBtn = document.getElementById('searchBtn');
 const cityName = document.getElementById('cityName');
@@ -9,6 +10,7 @@ const wind = document.getElementById('wind');
 const feelsLike = document.getElementById('feelsLike');
 const pressure = document.getElementById('pressure');
 const statusMessage = document.getElementById('statusMessage');
+const dayNight = document.getElementById('dayNight');
 
 let lastRequestId = 0;
 
@@ -46,6 +48,10 @@ function updateWeatherData(data) {
   wind.textContent = data.wind;
   feelsLike.textContent = data.feelsLike;
   pressure.textContent = data.pressure;
+
+  dayNight.textContent = data.dayNight;
+
+  document.body.classList.toggle('night-mode', !data.isDay);
 }
 
 async function fetchWeather(city) {
@@ -57,6 +63,7 @@ async function fetchWeather(city) {
   }
 
   const requestId = ++lastRequestId;
+
   setLoading(true);
   setStatus('Fetching weather data...', '');
 
@@ -77,7 +84,7 @@ async function fetchWeather(city) {
     }
 
     const weatherResponse = await fetch(
-      `https://api.open-meteo.com/v1/forecast?latitude=${place.latitude}&longitude=${place.longitude}&current=temperature_2m,apparent_temperature,relative_humidity_2m,pressure_msl,wind_speed_10m&timezone=auto`
+      `https://api.open-meteo.com/v1/forecast?latitude=${place.latitude}&longitude=${place.longitude}&current=temperature_2m,apparent_temperature,relative_humidity_2m,pressure_msl,wind_speed_10m,is_day&timezone=auto`
     );
 
     if (!weatherResponse.ok) {
@@ -87,31 +94,57 @@ async function fetchWeather(city) {
     const weatherData = await weatherResponse.json();
     const current = weatherData.current;
 
+    const isDay = current.is_day === 1;
+
     const weatherInfo = {
       city: `${place.name}${place.country ? `, ${place.country}` : ''}`,
+
       temperature: `${Math.round(current.temperature_2m)}°C`,
+
       condition: getWeatherCondition(current.temperature_2m),
-      icon: getWeatherIcon(current.temperature_2m, current.wind_speed_10m, current.relative_humidity_2m),
+
+      icon: getWeatherIcon(
+        current.temperature_2m,
+        current.wind_speed_10m,
+        current.relative_humidity_2m
+      ),
+
       humidity: `${Math.round(current.relative_humidity_2m)}%`,
+
       wind: `${Math.round(current.wind_speed_10m)} km/h`,
+
       feelsLike: `${Math.round(current.apparent_temperature)}°C`,
+
       pressure: `${Math.round(current.pressure_msl)} hPa`,
+
+      isDay: isDay,
+
+      dayNight: isDay ? '☀️ DAY' : '🌙 NIGHT'
     };
 
+    if (requestId !== lastRequestId) return;
+
     updateWeatherData(weatherInfo);
+
     setStatus(`Weather updated for ${weatherInfo.city}.`, 'success');
+
   } catch (error) {
+
     if (requestId === lastRequestId) {
       setStatus(error.message || 'Something went wrong.', 'error');
     }
+
   } finally {
+
     if (requestId === lastRequestId) {
       setLoading(false);
     }
   }
 }
 
-searchBtn.addEventListener('click', () => fetchWeather(cityInput.value));
+searchBtn.addEventListener('click', () => {
+  fetchWeather(cityInput.value);
+});
 
 cityInput.addEventListener('keydown', (event) => {
   if (event.key === 'Enter') {
