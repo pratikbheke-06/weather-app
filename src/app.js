@@ -39,6 +39,7 @@ function getWeatherIcon(temp, windSpeed, humidity) {
   return '⛅';
 }
 
+
 function updateWeatherData(data) {
   cityName.textContent = data.city;
   temperature.textContent = data.temperature;
@@ -49,10 +50,13 @@ function updateWeatherData(data) {
   feelsLike.textContent = data.feelsLike;
   pressure.textContent = data.pressure;
 
-  dayNight.textContent = data.dayNight;
+  if (dayNight) {
+    dayNight.textContent = data.dayNight;
+  }
 
   document.body.classList.toggle('night-mode', !data.isDay);
 }
+
 
 async function fetchWeather(city) {
   const query = city.trim();
